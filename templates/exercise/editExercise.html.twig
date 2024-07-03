@@ -1,0 +1,20 @@
+{% extends '/base.html.twig' %}
+{% block title %}Exercise edit{% endblock %}
+{% block content%}
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        <h1>Edit the Exercise!</h1>
+        {{ form_start(form) }}
+        {{ form_row(form.name)}}
+        {{ form_row(form.video_link) }}
+        {{ form_row(form.type) }}
+        <button type="submit" class="btn btn-primary">Update!</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

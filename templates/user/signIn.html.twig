@@ -1,0 +1,30 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Sign In{% endblock %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+
+{% block content %}
+    <div class="container mt-4">
+        {% for label, messages in app.flashes %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+        <div class="row justify-content-center">
+            <div class="col-md-3">
+                <h1>Sign In</h1>
+                {{ form_start(form) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.sign_in) }}
+                <a href="{{ path('sign-up') }}">No account? Sign Up</a>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

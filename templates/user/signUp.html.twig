@@ -1,0 +1,26 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Sign Up{% endblock %}
+
+{% form_theme form 'bootstrap_5_layout.html.twig' %}
+
+
+{% block content %}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-3">
+            <h1>Sign Up</h1>
+            {{ form_start(form) }}
+                {{ form_row(form.name) }}
+                {{ form_row(form.email) }}
+                {{ form_row(form.password) }}
+                {{ form_row(form.birth_day) }}
+                {{ form_row(form.gender) }}
+                <button type="submit" class="btn btn-primary">Sign Up</button>
+                <a href="{{ path('sign-in') }}">Already have an account? Sign In</a>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
