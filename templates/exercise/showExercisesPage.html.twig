@@ -15,7 +15,8 @@
                             <div class="col-md-6 p-4">
                                 <h2 class="card-title">{{ exercise.name }}</h2>
                                 <p class="card-text"><strong>Type:</strong> {{ exercise.type.name }}</p>
-                                <button class="btn btn-primary">Add to Workout</button>
+                                <button class="btn btn-primary mt-2">Add to Workout</button>
+                                <a href="{{  path('edit-exercise', { 'id': exercise.id })}}" class="btn btn-secondary mt-2">Edit</a>
                             </div>
                             <div class="col-md-4 p-2">
                                 <div class="embed-responsive embed-responsive-16by9 h-100">

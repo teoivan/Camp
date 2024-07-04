@@ -15,20 +15,31 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Assert\NotBlank]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank]
+    #[Assert\Regex(
+        pattern: '/\d/',
+        match: false,
+        message: 'Your name cannot contain a number',
+    )]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
+    #[Assert\Length(min:8)]
     private ?string $password = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\LessThanOrEqual(value: "-10 years", message: "User must be at least 10 years old")]
+    #[Assert\LessThanOrEqual(value: "today", message: "Birth date cannot be in the future")]
     private ?\DateTimeInterface $birth_day = null;
 
     #[ORM\Column(type: Types::SMALLINT)]

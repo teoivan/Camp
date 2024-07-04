@@ -23,8 +23,7 @@ class ExerciseType extends AbstractType
                 'class' => Type::class,
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a type',
-            ])
-            ->add('save', SubmitType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

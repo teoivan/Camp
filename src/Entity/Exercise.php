@@ -18,10 +18,16 @@ class Exercise
 
     #[ORM\Column(length: 255)]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 5)]
+    #[Assert\Length(min: 4)]
+    #[Assert\Regex(
+        pattern: '/\d/',
+        match: false,
+        message: 'The name cannot contain a number',
+    )]
     private ?string $name = null;
 
     #[ORM\Column(length: 255, nullable: true)]
+    #[Assert\Url]
     private ?string $video_link = null;
 
     #[ORM\ManyToOne(inversedBy: 'exercises')]

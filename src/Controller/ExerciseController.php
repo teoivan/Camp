@@ -16,7 +16,7 @@ class ExerciseController extends AbstractController
 {
 
 
-    #[Route('/exercises', name: 'exercises')]
+    #[Route('/exercises', name: 'show-exercises')]
     public function index(ExerciseRepository $exerciseRepository): Response
     {
         $exercises = $exerciseRepository->findAll();
@@ -50,12 +50,24 @@ class ExerciseController extends AbstractController
 
     }
 
-    #[Route('/exercise/{id}', name: 'edit-exercise', methods: ['GET','PATCH'])]
-    public function edit(int $id, Request $request, EntityManagerInterface $entityManager, ExerciseRepository $exerciseRepository): Response
+    #[Route('/exercise/{id}/edit', name: 'edit-exercise', methods: ['GET'])]
+    public function edit(int $id, ExerciseRepository $exerciseRepository): Response
     {
         $exercise=$exerciseRepository->findExerciseById($id);
         $form = $this->createForm(ExerciseType::class, $exercise,[
-            'action' => $this->generateUrl('edit-exercise', ['id'=>$id]),
+            'action' => $this->generateUrl('update-exercise', ['id'=>$id]),
+            'method' => 'PATCH',]);
+        return $this->render('exercise/editExercise.html.twig', [
+            'form' => $form,
+            'exercise'=>$exercise
+        ]);
+    }
+
+    #[Route('/exercise/{id}', name: 'update-exercise', methods: ['PATCH'])]
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, ExerciseRepository $exerciseRepository): Response
+    {
+        $exercise=$exerciseRepository->findExerciseById($id);
+        $form = $this->createForm(ExerciseType::class, $exercise,[
             'method' => 'PATCH',]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -70,6 +82,15 @@ class ExerciseController extends AbstractController
         return $this->render('exercise/editExercise.html.twig', [
             'form' => $form,
         ]);
+    }
+
+    #[Route('/exercise/{id}', name: 'delete-exercise', methods: ['GET','DELETE'])]
+    public function delete(int $id, EntityManagerInterface $entityManager, ExerciseRepository $exerciseRepository): Response
+    {
+        $exercise=$exerciseRepository->findExerciseById($id);
+        $entityManager->remove($exercise);
+        $entityManager->flush();
+        return $this->redirectToRoute('show-exercises');
     }
 
 

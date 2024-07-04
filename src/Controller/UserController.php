@@ -39,6 +39,16 @@ class UserController extends AbstractController
 
     }
 
+    #[Route('/users', name: 'show-users')]
+    public function index(UserRepository $userRepository): Response
+    {
+        $users = $userRepository->findAll();
+        return $this->render('user/showUsers.html.twig', [
+            'controller_name' => 'UserController',
+            'users' => $users,
+        ]);
+    }
+
    #[Route('/sign-in', name: 'sign-in', methods: ['GET','POST'])]
    public function sign(Request $request): Response
    {
@@ -53,7 +63,7 @@ class UserController extends AbstractController
    }
 
     #[Route('/user/{id}/edit', name: 'edit-user', methods: ['GET'])]
-    public function edit(int $id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    public function edit(int $id, UserRepository $userRepository): Response
     {
         $user=$userRepository->findUserById($id);
         if (!$user) {
@@ -64,6 +74,7 @@ class UserController extends AbstractController
             'method' => 'PATCH',]);
         return $this->render('user/editUser.html.twig', [
             'form' => $form,
+            'user'=>$user,
         ]);
     }
 
@@ -93,6 +104,14 @@ class UserController extends AbstractController
         ]);
     }
 
+    #[Route('/user/{id}', name: 'delete-user', methods: ['GET','DELETE'])]
+    public function delete(int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {
+        $user=$userRepository->findUserById($id);
+        $entityManager->remove($user);
+        $entityManager->flush();
+        return $this->redirectToRoute('show-users');
+    }
 
 
 }
