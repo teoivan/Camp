@@ -17,7 +17,30 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/sign-up', name: 'sign-up', methods: ['GET','POST'])]
+    #[Route('/signup', name: 'sign-up', methods: ['GET','POST'])]
+    public function signup(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = new User();
+
+        $form = $this->createForm(UserType::class, $user);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user= $form->getData();
+            // here the user gets the role as a "trainer"
+            $entityManager->persist($user);
+            $entityManager->flush();
+            $this->addFlash('success', 'Sign up successful!');
+            return $this->redirectToRoute('sign-in');
+        }
+
+        return $this->render('user/addTrainer.html.twig', [
+            'form' => $form,
+        ]);
+
+    }
+
+    #[Route('/add-user', name: 'add-user', methods: ['GET','POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
@@ -27,13 +50,14 @@ class UserController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $user= $form->getData();
+            // here the user gets the role "user"
             $entityManager->persist($user);
             $entityManager->flush();
-            $this->addFlash('success', 'Sign up successful!');
-            return $this->redirectToRoute('sign-in');
+            $this->addFlash('success', 'User added successfully!');
+            return $this->redirectToRoute('show-users');
         }
 
-        return $this->render('user/signUp.html.twig', [
+        return $this->render('user/addNewUser.html.twig', [
             'form' => $form,
         ]);
 
@@ -49,7 +73,7 @@ class UserController extends AbstractController
         ]);
     }
 
-   #[Route('/sign-in', name: 'sign-in', methods: ['GET','POST'])]
+   #[Route('/signin', name: 'sign-in', methods: ['GET','POST'])]
    public function sign(Request $request): Response
    {
        $form = $this->createForm(SignInType::class);
@@ -61,6 +85,7 @@ class UserController extends AbstractController
            'form' => $form,
        ]);
    }
+
 
     #[Route('/user/{id}/edit', name: 'edit-user', methods: ['GET'])]
     public function edit(int $id, UserRepository $userRepository): Response

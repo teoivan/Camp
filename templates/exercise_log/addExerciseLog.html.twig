@@ -1,0 +1,12 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Add Exercise Log{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary mt-2">Add exercise log</button>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}

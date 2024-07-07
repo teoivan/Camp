@@ -15,7 +15,7 @@
         {{ form_row(form.name)}}
         {{ form_row(form.birth_day) }}
         {{ form_row(form.gender) }}
-        <button type="submit" class="btn btn-primary">Update!</button>
+        <button type="submit" class="btn btn-primary">Edit</button>
         {{ form_end(form) }}
         <a href="{{  path('delete-user', { 'id': user.id }) }}" class="btn btn-secondary mt-2">Delete</a>
     </div>

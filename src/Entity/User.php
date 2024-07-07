@@ -49,7 +49,7 @@ class User
     /**
      * @var Collection<int, Workout>
      */
-    #[ORM\OneToMany(targetEntity: Workout::class, mappedBy: 'type', orphanRemoval: true)]
+    #[ORM\OneToMany(targetEntity: Workout::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $workouts;
 
     public function __construct()
@@ -147,7 +147,7 @@ class User
     {
         if (!$this->workouts->contains($workout)) {
             $this->workouts->add($workout);
-            $workout->setType($this);
+            $workout->setUser($this);
         }
 
         return $this;
@@ -157,11 +157,12 @@ class User
     {
         if ($this->workouts->removeElement($workout)) {
             // set the owning side to null (unless already changed)
-            if ($workout->getType() === $this) {
-                $workout->setType(null);
+            if ($workout->getUser() === $this) {
+                $workout->setUser(null);
             }
         }
 
         return $this;
     }
+
 }

@@ -19,17 +19,16 @@ class ExerciseLogRepository extends ServiceEntityRepository
     //    /**
     //     * @return ExerciseLog[] Returns an array of ExerciseLog objects
     //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('e.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+        public function findByWorkoutId($id): array
+        {
+            return $this->createQueryBuilder('e')
+                ->andWhere('e.workout = :id')
+                ->setParameter('id', $id)
+                ->orderBy('e.workout', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
+        }
 
     //    public function findOneBySomeField($value): ?ExerciseLog
     //    {

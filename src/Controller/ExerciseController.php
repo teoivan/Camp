@@ -16,7 +16,7 @@ class ExerciseController extends AbstractController
 {
 
 
-    #[Route('/exercises', name: 'show-exercises')]
+    #[Route('/exercises', name: 'show-exercises', methods:['GET'])]
     public function index(ExerciseRepository $exerciseRepository): Response
     {
         $exercises = $exerciseRepository->findAll();
@@ -27,7 +27,7 @@ class ExerciseController extends AbstractController
         ]);
     }
 
-    #[Route('/add-exercise', name: 'add_exercise',methods: array('GET', 'POST'))]
+    #[Route('/add-exercise', name: 'add-exercise',methods: array('GET', 'POST'))]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $exercise = new Exercise();
@@ -92,6 +92,8 @@ class ExerciseController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('show-exercises');
     }
+
+
 
 
 }

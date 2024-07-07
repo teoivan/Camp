@@ -6,6 +6,9 @@
     <div class="container mt-5">
         <h1 class="text-center mb-4">User List</h1>
         <div class="row justify-content-center">
+            <div class="col-10 mb-3">
+                <a href="{{  path('add-user')}}" class="btn btn-secondary mt-3 m-md-2">Add new user</a>
+            </div>
             {% for user in users %}
                 <div class="col-10 mb-3">
                     <div class="card shadow-sm">

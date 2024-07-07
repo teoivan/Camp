@@ -5,7 +5,7 @@
 {% block body %}
     <div class="container mt-5">
         <h1 class="text-center mb-4">Exercise List</h1>
-
+        <a href="{{  path('add-exercise')}}" class="btn btn-secondary mt-3 m-md-2">Add new exercise</a>
         <div class="row">
             {% for exercise in exercises %}
                 <div class="col-md-6 mb-4">
@@ -15,7 +15,7 @@
                             <div class="col-md-6 p-4">
                                 <h2 class="card-title">{{ exercise.name }}</h2>
                                 <p class="card-text"><strong>Type:</strong> {{ exercise.type.name }}</p>
-                                <button class="btn btn-primary mt-2">Add to Workout</button>
+                                <a href ="{{ path('add-exercise-log', { 'id': exercise.id })}}" class="btn btn-primary mt-2">Add to Workout</a>
                                 <a href="{{  path('edit-exercise', { 'id': exercise.id })}}" class="btn btn-secondary mt-2">Edit</a>
                             </div>
                             <div class="col-md-4 p-2">

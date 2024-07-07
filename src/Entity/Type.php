@@ -24,9 +24,16 @@ class Type
     #[ORM\OneToMany(targetEntity: Exercise::class, mappedBy: 'type', orphanRemoval: true)]
     private Collection $exercises;
 
+    /**
+     * @var Collection<int, Workout>
+     */
+    #[ORM\OneToMany(targetEntity: Workout::class, mappedBy: 'type', orphanRemoval: true)]
+    private Collection $workouts;
+
     public function __construct()
     {
         $this->exercises = new ArrayCollection();
+        $this->workouts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,4 +89,36 @@ class Type
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Workout>
+     */
+    public function getWorkouts(): Collection
+    {
+        return $this->workouts;
+    }
+
+    public function addWorkout(Workout $workout): static
+    {
+        if (!$this->workouts->contains($workout)) {
+            $this->workouts->add($workout);
+            $workout->setType($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWorkout(Workout $workout): static
+    {
+        if ($this->workouts->removeElement($workout)) {
+            // set the owning side to null (unless already changed)
+            if ($workout->getType() === $this) {
+                $workout->setType(null);
+            }
+        }
+
+        return $this;
+    }
+
+
 }

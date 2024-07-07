@@ -21,7 +21,7 @@ class Workout
 
     #[ORM\ManyToOne(inversedBy: 'workouts')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $type = null;
+    private ?User $user = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
@@ -31,6 +31,11 @@ class Workout
      */
     #[ORM\OneToMany(targetEntity: ExerciseLog::class, mappedBy: 'workout', orphanRemoval: true)]
     private Collection $exerciseLogs;
+
+    #[ORM\ManyToOne(inversedBy: 'workouts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Type $type = null;
+
 
     public function __construct()
     {
@@ -61,12 +66,12 @@ class Workout
         return $this;
     }
 
-    public function getType(): ?User
+    public function getType(): ?Type
     {
         return $this->type;
     }
 
-    public function setType(?User $type): static
+    public function setType(?Type $type): static
     {
         $this->type = $type;
 
@@ -111,6 +116,18 @@ class Workout
                 $exerciseLog->setWorkout(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
