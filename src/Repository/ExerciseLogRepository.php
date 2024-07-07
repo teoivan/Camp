@@ -30,6 +30,19 @@ class ExerciseLogRepository extends ServiceEntityRepository
             ;
         }
 
+    public function findByWorkoutAndUser($workoutId, $userId): ExerciseLog
+    {
+        $response= $this->createQueryBuilder('e')
+            ->andWhere('e.workout = :workoutId')
+            ->andWhere('e.exercise = :exerciseId')
+            ->setParameter('workoutId', $workoutId)
+            ->setParameter('exerciseId', $userId)
+            ->orderBy('e.exercise', 'ASC')
+            ->getQuery()
+            ->getResult();
+        return $response[0];
+    }
+
     //    public function findOneBySomeField($value): ?ExerciseLog
     //    {
     //        return $this->createQueryBuilder('e')

@@ -14,8 +14,9 @@
                                 <h2 class="card-title mb-1">{{ exerciseLog.exercise.name }}</h2>
                                 <p class="card-text mb-1"><strong>Type:</strong> {{ exerciseLog.exercise.type.name }}</p>
                                 <p class="card-text mb-1"><strong>Reps:</strong> {{ exerciseLog.nrReps }}</p>
-                                <p class="card-text mb-1"><strong>Duration:</strong> {{ exerciseLog.duration|date('m:s') }}</p>
+                                <p class="card-text mb-1"><strong>Duration:</strong> {{ exerciseLog.duration|date('i:s') }}</p>
                             </div>
+                            <a href="{{ path('edit-exercise-log',  { 'workoutId': exerciseLog.workout.id, 'exerciseId': exerciseLog.exercise.id }) }}" class="btn btn-primary ml-auto">Edit</a>
                         </div>
                     </div>
                 </div>

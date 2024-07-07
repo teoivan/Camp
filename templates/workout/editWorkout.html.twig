@@ -1,0 +1,15 @@
+{% extends '/base.html.twig' %}
+{% block title %}Workout edit{% endblock %}
+{% block content%}
+    <div class="container mt-4">
+
+        <h1>Edit workout</h1>
+        <p><strong>Creation date: </strong>{{ workout.date|date('d-m-Y')}}</p>
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.type) }}
+        <button type="submit" class="btn btn-primary">Save</button>
+        {{ form_end(form) }}
+        <a href="{{  path('delete-workout', { 'id': workout.id }) }}" class="btn btn-secondary mt-2">Delete</a>
+    </div>
+{% endblock %}

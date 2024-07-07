@@ -16,69 +16,99 @@ class ExerciseController extends AbstractController
 {
 
 
-    #[Route('/exercises', name: 'show-exercises', methods:['GET'])]
+    #[Route('/exercises', name: 'show-exercises', methods: ['GET'])]
     public function index(ExerciseRepository $exerciseRepository): Response
     {
         $exercises = $exerciseRepository->findAll();
         return $this->render('exercise/showExercisesPage.html.twig', [
             'controller_name' => 'ExerciseController',
             'exercises' => $exercises,
-
         ]);
     }
 
-    #[Route('/add-exercise', name: 'add-exercise',methods: array('GET', 'POST'))]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/exercises/{id}', name: 'get-exercise', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function show(int $id, ExerciseRepository $exerciseRepository): Response
+    {
+        $exercise = $exerciseRepository->find($id);
+        if (!$exercise) {
+            throw $this->createNotFoundException('No exercise found for id ' . $id);
+        }
+        return $this->render('exercise/showExercise.html.twig', [
+            'exercise' => $exercise,
+        ]);
+    }
+
+    #[Route('/exercises/new', name: 'new-exercise', methods: ['GET'])]
+    public function new(): Response
     {
         $exercise = new Exercise();
+        $form = $this->createForm(ExerciseType::class, $exercise,[
+            'action' => $this->generateUrl('create-exercise'),
+            'method'=>'POST'
+        ]);
 
+        return $this->render('exercise/addExercisePage.html.twig', [
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/exercises', name: 'create-exercise', methods: ['POST'])]
+    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $exercise = new Exercise();
         $form = $this->createForm(ExerciseType::class, $exercise);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $exercise = $form->getData();
             $entityManager->persist($exercise);
             $entityManager->flush();
             $this->addFlash('success', 'Exercise created successfully!');
-            return $this->redirectToRoute('add_exercise');
-
+            return $this->redirectToRoute('show-exercises');
         }
 
         return $this->render('exercise/addExercisePage.html.twig', [
             'form' => $form,
         ]);
-
     }
 
-    #[Route('/exercise/{id}/edit', name: 'edit-exercise', methods: ['GET'])]
+    #[Route('/exercises/{id}/edit', name: 'edit-exercise', methods: ['GET'])]
     public function edit(int $id, ExerciseRepository $exerciseRepository): Response
     {
-        $exercise=$exerciseRepository->findExerciseById($id);
-        $form = $this->createForm(ExerciseType::class, $exercise,[
-            'action' => $this->generateUrl('update-exercise', ['id'=>$id]),
-            'method' => 'PATCH',]);
+        $exercise = $exerciseRepository->find($id);
+        if (!$exercise) {
+            throw $this->createNotFoundException('No exercise found for id ' . $id);
+        }
+
+        $form = $this->createForm(ExerciseType::class, $exercise, [
+            'action' => $this->generateUrl('update-exercise', ['id' => $exercise->getId()]),
+            'method' => 'PATCH',
+        ]);
+
         return $this->render('exercise/editExercise.html.twig', [
             'form' => $form,
-            'exercise'=>$exercise
+            'exercise' => $exercise,
         ]);
     }
 
-    #[Route('/exercise/{id}', name: 'update-exercise', methods: ['PATCH'])]
+    #[Route('/exercises/{id}', name: 'update-exercise', methods: ['PATCH'])]
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, ExerciseRepository $exerciseRepository): Response
     {
-        $exercise=$exerciseRepository->findExerciseById($id);
-        $form = $this->createForm(ExerciseType::class, $exercise,[
-            'method' => 'PATCH',]);
+        $exercise = $exerciseRepository->find($id);
+        if (!$exercise) {
+            throw $this->createNotFoundException('No exercise found for id ' . $id);
+        }
+
+        $form = $this->createForm(ExerciseType::class, $exercise, [
+            'method' => $request->getMethod(),
+        ]);
+
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $exercise = $form->getData();
-            $entityManager->persist($exercise);
             $entityManager->flush();
-            $this->addFlash('success', 'Exercise Edited!');
-            return $this->redirectToRoute('edit-exercise', [
-                'id' => $id,
-            ]);
+            $this->addFlash('success', 'Exercise updated successfully!');
+            return $this->redirectToRoute('show-exercises');
         }
+
         return $this->render('exercise/editExercise.html.twig', [
             'form' => $form,
         ]);
@@ -92,7 +122,6 @@ class ExerciseController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('show-exercises');
     }
-
 
 
 

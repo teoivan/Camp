@@ -4,6 +4,11 @@
 
 {% block body %}
     <div class="container mt-4">
+        <dive class="justify-content-center mt-2 mb-4">
+            <h1>Add Exercise Log</h1>
+        </dive>
+        <p>Exercise name: {{ exercise.name }}</p>
+        <p>Exercise type: {{ exercise.type.name }}</p>
         {{ form_start(form) }}
         {{ form_widget(form) }}
         <button type="submit" class="btn btn-primary mt-2">Add exercise log</button>

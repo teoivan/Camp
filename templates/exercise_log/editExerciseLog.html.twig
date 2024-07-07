@@ -1,0 +1,18 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Add Exercise Log{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <dive class="justify-content-center mt-2 mb-4">
+            <h1>Edit Exercise Log</h1>
+        </dive>
+        <p>Exercise name: {{ exerciseLog.exercise.name }}</p>
+        <p>Exercise type: {{ exerciseLog.exercise.type.name }}</p>
+        {{ form_start(form) }}
+        {{ form_widget(form) }}
+        <button type="submit" class="btn btn-primary mt-2">Edit</button>
+        {{ form_end(form) }}
+        <a href="{{ path('delete-exercise-log', { 'workoutId': exerciseLog.workout.id, 'exerciseId': exerciseLog.exercise.id }) }}" class="btn btn-secondary mt-2">Delete</a>
+    </div>
+{% endblock %}

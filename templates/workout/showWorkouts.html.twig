@@ -7,7 +7,7 @@
         <h1 class="text-center mb-4">Workout List</h1>
         <div class="row justify-content-center">
             <div class="col-10 mb-3">
-                <a href="{{  path('add-workout')}}" class="btn btn-secondary mt-3 m-md-2">Add new workout</a>
+                <a href="{{  path('new-workout')}}" class="btn btn-secondary mt-3 m-md-2">Add new workout</a>
             </div>
             {% for workout in workouts %}
                 <div class="col-10 mb-3">
@@ -19,7 +19,8 @@
                                 <p class="card-text mb-1"><strong>Date created:</strong> {{ workout.date|date('d-m-Y') }}</p>
                                 <p class="card-text mb-0"><strong>Type:</strong> {{ workout.type.name }}</p>
                             </div>
-                            <a href="{{ path('show-exercise-log', { 'id': workout.id}) }}" class="btn btn-primary ml-auto">View</a>
+                            <a href="{{ path('show-exercise-logs', { 'workoutId': workout.id}) }}" class="btn btn-primary ml-auto">View</a>
+                            <a href="{{ path('edit-workout', { 'id': workout.id}) }}" class="btn btn-primary ml-auto">Edit</a>
                         </div>
                     </div>
                 </div>
