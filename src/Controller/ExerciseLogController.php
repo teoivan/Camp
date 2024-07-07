@@ -15,6 +15,14 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExerciseLogController extends AbstractController
 {
+
+    #[Route('/', name: 'home', methods:'GET')]
+    public function home(): Response
+    {
+        return $this->render('components/home.html.twig', [
+
+        ]);
+    }
     #[Route('/exercise-log/{id}/new', name: 'new-exercise-log', methods: ['GET'])]
     public function new(int $id, ExerciseRepository $exerciseRepository): Response
     {

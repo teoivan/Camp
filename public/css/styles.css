@@ -1,0 +1,65 @@
+/* Custom Colors */
+:root {
+    --dark-blue: #001C30;
+    --teal: #176B87;
+    --light-blue: #64CCC5;
+    --off-white: #DAFFFB;
+}
+
+
+
+/* Navbar Custom Styles */
+.navbar-dark.bg-dark-blue {
+    background-color: var(--dark-blue);
+}
+
+.navbar-nav .nav-link {
+    color: var(--off-white);
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+    color: var(--light-blue);
+}
+
+.navbar-toggler {
+    border-color: var(--off-white);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='%23DAFFFB' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");
+}
+
+/* Button Custom Styles */
+.btn-primary {
+    background-color: var(--teal);
+    color: var(--off-white);
+    border: none;
+
+}
+
+.btn-primary:hover {
+    background-color: var(--light-blue);
+    color: var(--dark-blue);
+}
+
+/* Search Bar Custom Styles */
+.navbar .search-bar input {
+    background-color: var(--off-white);
+    color: var(--dark-blue);
+    border: 1px solid var(--teal);
+    padding: 5px 10px;
+    font-size: 16px;
+}
+
+.navbar .search-bar button {
+    background-color: var(--teal);
+    color: var(--off-white);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.navbar .search-bar button:hover {
+    background-color: var(--light-blue);
+}
