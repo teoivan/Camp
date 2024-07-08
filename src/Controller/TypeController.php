@@ -10,7 +10,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class TypeController extends AbstractController
 {
-    #[Route('/type', name: 'create_type')]
+    #[Route('/type', name: 'create_type', methods: ['GET','POST'])]
     public function createType(EntityManagerInterface $entityManager): Response
     {
         $type = new Type();

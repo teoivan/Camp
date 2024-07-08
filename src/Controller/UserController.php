@@ -19,7 +19,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class UserController extends AbstractController
 {
 
-    #[Route('/users', name: 'show-users')]
+    #[Route('/users', name: 'show-users', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
         $users = $userRepository->findAll();
@@ -29,7 +29,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id}', name: 'get-user', methods: ['GET'], requirements: ['id' => '\d+'])]
+    #[Route('/users/{id}', name: 'get-user', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function show(int $id, UserRepository $userRepository): Response
     {
         $user = $userRepository->find($id);
@@ -40,36 +40,15 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-    #[Route('/signup', name: 'sign-up', methods: ['GET','POST'])]
-    public function signup(Request $request, EntityManagerInterface $entityManager): Response
+
+    #[Route('/users/{role}/new', name: 'new-user', methods: ['GET'])]
+    public function new(string $role): Response
     {
         $user = new User();
 
-        $form = $this->createForm(UserType::class, $user);
-
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $user= $form->getData();
-            // here the user gets the role as a "trainer"
-            $entityManager->persist($user);
-            $entityManager->flush();
-            $this->addFlash('success', 'Sign up successful!');
-            return $this->redirectToRoute('sign-in');
-        }
-
-        return $this->render('user/addTrainer.html.twig', [
-            'form' => $form,
-        ]);
-
-    }
-
-    #[Route('/users/new', name: 'new-user', methods: ['GET'])]
-    public function new(): Response
-    {
-        $user = new User();
 
         $form = $this->createForm(UserType::class, $user,[
-            'action' => $this->generateUrl('create-user'),
+            'action' => $this->generateUrl('create-user',['role'=>$role]),
             'method' => 'POST',
         ]);
 
@@ -79,21 +58,27 @@ class UserController extends AbstractController
 
     }
 
-    #[Route('/users', name: 'create-user', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/users/{role}', name: 'create-user', methods: ['POST'])]
+    public function create(string $role,Request $request, EntityManagerInterface $entityManager): Response
     {
-        $user = new User();
+        $newUser = new User();
 
-        $form = $this->createForm(UserType::class, $user);
-
+        $form = $this->createForm(UserType::class, $newUser, [
+            'method' => 'POST',
+        ]);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $user= $form->getData();
+            $newUser= $form->getData();
+            $newUser->setRole($role);
             // here the user gets the role "user"
-            $entityManager->persist($user);
+            $entityManager->persist($newUser);
             $entityManager->flush();
             $this->addFlash('success', 'User added successfully!');
-            return $this->redirectToRoute('show-users');
+            if($newUser->getRole() == 'user'){
+                return $this->redirectToRoute('show-users');
+            }else{
+                return $this->redirectToRoute('sign-in');
+            }
         }
 
         return $this->render('user/addNewUser.html.twig', [
@@ -103,14 +88,13 @@ class UserController extends AbstractController
     }
 
 
-
    #[Route('/signin', name: 'sign-in', methods: ['GET','POST'])]
    public function sign(Request $request): Response
    {
        $form = $this->createForm(SignInType::class);
        $form->handleRequest($request);
        if ($form->isSubmitted() && $form->isValid()) {
-           return $this->redirectToRoute('exercises');
+           return $this->redirectToRoute('home');
        }
        return $this->render('user/signIn.html.twig', [
            'form' => $form,
@@ -122,9 +106,7 @@ class UserController extends AbstractController
     public function edit(int $id, UserRepository $userRepository): Response
     {
         $user=$userRepository->findUserById($id);
-        if (!$user) {
-            throw $this->createNotFoundException('No user found for id ' . $id);
-        }
+
         $form = $this->createForm(EditUserType::class, $user,[
             'action' => $this->generateUrl('update-user', ['id'=>$id]),
             'method' => 'PATCH',]);
@@ -138,9 +120,6 @@ class UserController extends AbstractController
     public function update(int $id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         $user = $userRepository->findUserById($id);
-        if (!$user) {
-            throw $this->createNotFoundException('No user found for id ' . $id);
-        }
 
         $form = $this->createForm(EditUserType::class, $user, [
             'method' => 'PATCH',
@@ -160,7 +139,7 @@ class UserController extends AbstractController
         ]);
     }
 
-    #[Route('/users/{id}', name: 'delete-user', methods: ['GET','DELETE'])]
+    #[Route('/user/{id}', name: 'delete-user', methods: ['GET','DELETE'])]
     public function delete(int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         $user=$userRepository->findUserById($id);
@@ -168,8 +147,6 @@ class UserController extends AbstractController
         $entityManager->flush();
         return $this->redirectToRoute('show-users');
     }
-
-
 
 
 }

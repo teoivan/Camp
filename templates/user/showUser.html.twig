@@ -11,6 +11,7 @@
                             <div>
                                 <h2 class="card-title mb-1">{{ user.name }}</h2>
                                 <p class="card-text mb-1"><strong>Email:</strong> {{ user.email }}</p>
+                                <p class="card-text mb-1"><strong>Role:</strong> {{ user.role }}</p>
                                 <p class="card-text mb-1"><strong>Birthday:</strong> {{ user.birthDay|date('d-m-Y') }}</p>
                                 <p class="card-text mb-0"><strong>Gender:</strong> {{ gender_map[user.gender]|default('Unknown') }}</p>
                             </div>

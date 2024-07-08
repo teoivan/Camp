@@ -15,7 +15,6 @@ class User
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Assert\NotBlank]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
@@ -51,6 +50,9 @@ class User
      */
     #[ORM\OneToMany(targetEntity: Workout::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $workouts;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $role = null;
 
     public function __construct()
     {
@@ -161,6 +163,18 @@ class User
                 $workout->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(?string $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }
