@@ -30,18 +30,33 @@ class ExerciseLogRepository extends ServiceEntityRepository
             ;
         }
 
-    public function findByWorkoutAndUser($workoutId, $userId): ExerciseLog
+    public function findTopExercises(int $limit = 3): array
+    {
+        $response = $this->createQueryBuilder('e')
+            ->select('e', 'COUNT(e.exercise) as occurrence_count')
+            ->groupBy('e.exercise')
+            ->orderBy('occurrence_count', 'DESC')
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getResult();
+
+        return $response;
+    }
+
+    public function findByWorkoutAndExercise($workoutId, $exerciseId): ExerciseLog
     {
         $response= $this->createQueryBuilder('e')
             ->andWhere('e.workout = :workoutId')
             ->andWhere('e.exercise = :exerciseId')
             ->setParameter('workoutId', $workoutId)
-            ->setParameter('exerciseId', $userId)
+            ->setParameter('exerciseId', $exerciseId)
             ->orderBy('e.exercise', 'ASC')
             ->getQuery()
             ->getResult();
         return $response[0];
     }
+
+
 
     //    public function findOneBySomeField($value): ?ExerciseLog
     //    {

@@ -1,0 +1,105 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Start Workout{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Workout: {{ exerciseLogs[0].workout.name }}</h1>
+        <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false">
+            <div class="carousel-inner">
+                {% for exerciseLog in exerciseLogs %}
+                    <div class="carousel-item {% if loop.first %}active{% endif %}">
+                        <div class="card shadow-sm carousel-card">
+                            <div class="card-body d-flex">
+                                <div class="left-content">
+                                    <h2 class="card-title mb-1">{{ exerciseLog.exercise.name }}</h2>
+                                    <p class="card-text mb-1"><strong>Type:</strong> {{ exerciseLog.exercise.type.name }}</p>
+                                    <p class="card-text mb-1"><strong>Reps:</strong> {{ exerciseLog.nrReps }}</p>
+                                    <div id="timer-{{ loop.index }}" class="timer"> Time: <strong>{{ exerciseLog.duration|date('i:s') }}</strong></div>
+                                    <button class="btn btn-primary mt-2 start-exercise-button" data-index="{{ loop.index }}" data-duration="{{ exerciseLog.duration|date('U') - '1970-01-01 00:00:00'|date('U') }}">Start Exercise</button>
+                                </div>
+                                <div class="right-content d-flex align-items-center justify-content-center">
+                                    <div class="embed-responsive embed-responsive-16by9 h-100">
+                                        {% if exerciseLog.exercise.videoLink %}
+                                            {% set embedUrl = exerciseLog.exercise.videoLink|replace({'watch?v=': 'embed/'})|split('&')[0] %}
+                                            <iframe class="embed-responsive-item" src="{{ embedUrl }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                        {% else %}
+                                            <p class="text-center my-3">No video available</p>
+                                        {% endif %}
+                                    </div>                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </div>
+
+    <style>
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #7465b5;
+            border-radius: 50%;
+        }
+        .timer{
+            font-size: 20px;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+
+        .carousel-card {
+            width: 70%;
+            height: 40vh;
+            margin: 0 auto;
+        }
+
+        .card-body {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .left-content {
+            flex: 1;
+            padding-right: 20px;
+        }
+
+        .right-content {
+            flex: 0 0 150px; /* Adjust the width as needed */
+        }
+    </style>
+
+    <script>
+        document.querySelectorAll('.start-exercise-button').forEach(button => {
+            button.addEventListener('click', function() {
+                let index = this.getAttribute('data-index');
+                let duration = parseInt(this.getAttribute('data-duration'));
+                let timer = document.getElementById(`timer-${index}`);
+
+                let countdown = setInterval(() => {
+                    let minutes = Math.floor(duration / 60);
+                    let seconds = duration % 60;
+                    timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    duration--;
+
+                    if (duration < 0) {
+                        clearInterval(countdown);
+                        this.disabled = true;
+                        alert('Time is up! Move to the next exercise.');
+                    }
+                }, 1000);
+            });
+        });
+    </script>
+{% endblock %}

@@ -16,14 +16,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class ExerciseLogController extends AbstractController
 {
 
-    #[Route('/', name: 'home', methods:'GET')]
-    public function home(): Response
-    {
-        return $this->render('components/home.html.twig', [
 
-        ]);
-    }
-    #[Route('/exercise-log/{id}/new', name: 'new-exercise-log', methods: ['GET'])]
+
+
+    #[Route('/exercise-logs/{id}/new', name: 'new-exercise-log', methods: ['GET'])]
     public function new(int $id, ExerciseRepository $exerciseRepository): Response
     {
         $exerciseLog = new ExerciseLog();
@@ -43,7 +39,7 @@ class ExerciseLogController extends AbstractController
         ]);
     }
 
-    #[Route('/exercise-log/{exerciseId}', name: 'create-exercise-log', methods: ['POST'])]
+    #[Route('/exercise-logs/{exerciseId}', name: 'create-exercise-log', methods: ['POST'])]
     public function create(int $exerciseId, Request $request, EntityManagerInterface $entityManager, ExerciseRepository $exerciseRepository): Response
     {
         $exerciseLog = new ExerciseLog();
@@ -86,7 +82,7 @@ class ExerciseLogController extends AbstractController
     #[Route('/exercise-logs/{workoutId}/{exerciseId}/edit', name: 'edit-exercise-log', methods: ['GET'])]
     public function edit(int $workoutId, int $exerciseId, ExerciseLogRepository $exerciseLogRepository): Response
     {
-        $exerciseLog = $exerciseLogRepository->findByWorkoutAndUser($workoutId, $exerciseId);
+        $exerciseLog = $exerciseLogRepository->findByWorkoutAndExercise($workoutId, $exerciseId);
 
         $form = $this->createForm(EditExerciseLogType::class, $exerciseLog,[
             'action' => $this->generateUrl('update-exercise-log', ['workoutId'=>$workoutId, 'exerciseId'=>$exerciseId]),
@@ -97,7 +93,7 @@ class ExerciseLogController extends AbstractController
         ]);
     }
 
-    #[Route('/workouts/{workoutId}/{exerciseId}', name: 'update-exercise-log', methods: ['PATCH'])]
+    #[Route('/exercise-logs/{workoutId}/{exerciseId}', name: 'update-exercise-log', methods: ['PATCH'])]
     public function update(int $workoutId, int $exerciseId, EntityManagerInterface $entityManager, ExerciseLogRepository $exerciseLogRepository, Request $request): Response
     {
         $exerciseLog = $exerciseLogRepository->findByWorkoutAndUser($workoutId, $exerciseId);
@@ -118,10 +114,10 @@ class ExerciseLogController extends AbstractController
         ]);
     }
 
-    #[Route('/exercise-logs/{workoutId}/{exerciseId}', name: 'delete-exercise-log', methods: ['GET','DELETE'])]
+    #[Route('/exercise-log/{workoutId}/{exerciseId}', name: 'delete-exercise-log', methods: ['GET','DELETE'])]
     public function delete(int $workoutId, int $exerciseId, EntityManagerInterface $entityManager,  ExerciseLogRepository $exerciseLogRepository): Response
     {
-        $exerciseLog = $exerciseLogRepository->findByWorkoutAndUser($workoutId, $exerciseId);
+        $exerciseLog = $exerciseLogRepository->findByWorkoutAndExercise($workoutId, $exerciseId);
         $entityManager->remove($exerciseLog);
         $entityManager->flush();
         return $this->redirectToRoute('show-exercise-logs',['workoutId'=>$workoutId]);

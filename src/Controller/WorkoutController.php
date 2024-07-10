@@ -7,6 +7,7 @@ use App\Entity\Workout;
 use App\Form\Type\EditWorkoutType;
 use App\Form\Type\UserType;
 use App\Form\Type\WorkoutType;
+use App\Repository\ExerciseLogRepository;
 use App\Repository\UserRepository;
 use App\Repository\WorkoutRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -26,6 +27,16 @@ class WorkoutController extends AbstractController
             'controller_name' => 'WorkoutController',
             'workouts' => $workouts,
 
+        ]);
+    }
+
+    #[Route('/workouts/{workoutId}/start', name: 'start-workout', methods: ['GET'])]
+    public function startWorkout(int $workoutId, ExerciseLogRepository $exerciseLogRepository): Response
+    {
+        $exerciseLogs = $exerciseLogRepository->findByWorkoutId($workoutId);
+
+        return $this->render('workout/startWorkout.html.twig', [
+            'exerciseLogs' => $exerciseLogs,
         ]);
     }
 

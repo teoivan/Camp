@@ -54,6 +54,7 @@ class UserController extends AbstractController
 
         return $this->render('user/addNewUser.html.twig', [
             'form' => $form,
+            'role' => $role,
         ]);
 
     }
@@ -70,7 +71,6 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $newUser= $form->getData();
             $newUser->setRole($role);
-            // here the user gets the role "user"
             $entityManager->persist($newUser);
             $entityManager->flush();
             $this->addFlash('success', 'User added successfully!');

@@ -1,9 +1,131 @@
 {% extends '/base.html.twig' %}
 
-{% block title %} Home {% endblock %}
+{% block title %}Home{% endblock %}
 
 {% block body %}
-    <div class="container">
-        Hello
+    <div class="hero-section text-white" style="height: 55vh; background: linear-gradient(95deg, #7465b5, #53abbd);">
+        <div class="container h-100">
+            <div class="row h-100 align-items-center">
+                <div class="col-md-6 text-center text-md-left">
+                    <h1 class="hero-title">Smart Workout</h1>
+                    <h4 class="hero-subtitle">Your Journey to a Healthier Life Begins Here</h4>
+                    <a class="btn btn-outline-light btn-lg" href="{{ path('sign-in') }}" role="button">Get Started</a>
+                </div>
+                <div class="col-md-6 d-none d-md-block">
+                    <img src="{{ asset('images/hero.png') }}" class="img-fluid image" alt="Workout Image">
+                </div>
+            </div>
+        </div>
     </div>
+
+    <section class="about-us-section py-5" style="background-color: #f0f7fa">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body">
+                            <h5 class="card-title">Your Source for All Things Fitness</h5>
+                            <p class="card-text">Dedicated to providing the best workout plans. Focus on reliability, customer service, and uniqueness.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body">
+                            <h5 class="card-title">Help you get fit</h5>
+                            <p class="card-text">Passion for helping people get fit. Extensive research to offer the best workout plans. Serving customers worldwide.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body">
+                            <h5 class="card-title">Enjoy Our Products</h5>
+                            <p class="card-text">Enjoy our products as much as we enjoy offering them. Contact us for any questions or comments. Sincerely, The Smart Workout Team.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="top-exercises">
+        <div class="container mt-2">
+            <h2 class="text-center mb-4">Top workouts</h2>
+            <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false">
+                <div class="carousel-inner">
+                    {% for exerciseLog in exerciseLogs %}
+                        <div class="carousel-item {% if loop.first %}active{% endif %}">
+                            <div class="card shadow-sm carousel-card">
+                                <div class="card-body d-flex justify-content-center align-items-center flex-column">
+                                    <h3 class="card-title mb-2">{{ exerciseLog[0].exercise.name }}</h3>
+                                    <p class="card-text mb-2"><strong>Type:</strong> {{ exerciseLog[0].exercise.type.name }}</p>
+                                    <a href="{{ exerciseLog[0].exercise.videoLink }}" class="btn btn-primary" target="_blank">Watch on YouTube</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        .image {
+            max-height: 45vh;
+            margin-left: 20vh;
+            object-fit: cover;
+            border: 2px solid rgba(0, 0, 0, 0.5);
+            border-radius: 5%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .about-us-section {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: #7465b5;
+            border-color: #7465b5;
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            background-color: #7465b5;
+            border-radius: 50%;
+        }
+
+        .carousel-control-prev,
+        .carousel-control-next {
+            width: 5%;
+        }
+
+        .carousel-card {
+            width: 70%;
+            margin: 0 auto;
+        }
+    </style>
 {% endblock %}

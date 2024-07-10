@@ -15,7 +15,6 @@
                                 <p class="card-text mb-1"><strong>Birthday:</strong> {{ user.birthDay|date('d-m-Y') }}</p>
                                 <p class="card-text mb-0"><strong>Gender:</strong> {{ gender_map[user.gender]|default('Unknown') }}</p>
                             </div>
-                            <a href="{{ path('edit-user', { 'id': user.id }) }}" class="btn btn-primary ml-auto">Edit</a>
                         </div>
                     </div>
         </div>
