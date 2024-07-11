@@ -9,6 +9,7 @@ use App\Repository\ExerciseRepository;
 use App\Repository\WorkoutRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,10 +19,14 @@ class ExerciseLogController extends AbstractController
 
 
 
-
+    public function __construct(
+        private Security $security,
+    ){
+    }
     #[Route('/exercise-logs/{id}/new', name: 'new-exercise-log', methods: ['GET'])]
     public function new(int $id, ExerciseRepository $exerciseRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $exerciseLog = new ExerciseLog();
         $exercise = $exerciseRepository->find($id);
         if (!$exercise) {
@@ -72,16 +77,20 @@ class ExerciseLogController extends AbstractController
     #[Route('exercise-logs/{workoutId}', name: 'show-exercise-logs', methods: ['GET'])]
     public function index(int $workoutId, ExerciseLogRepository $exerciseLogRepository): Response
     {
+        $user=$this->security->getUser();
         $exercises = $exerciseLogRepository->findByWorkoutId($workoutId);
 
         return $this->render('exercise_log/showExerciseLog.html.twig', [
             'exerciseLogs' => $exercises,
+            'user'=>$user,
         ]);
     }
 
     #[Route('/exercise-logs/{workoutId}/{exerciseId}/edit', name: 'edit-exercise-log', methods: ['GET'])]
     public function edit(int $workoutId, int $exerciseId, ExerciseLogRepository $exerciseLogRepository): Response
     {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
         $exerciseLog = $exerciseLogRepository->findByWorkoutAndExercise($workoutId, $exerciseId);
 
         $form = $this->createForm(EditExerciseLogType::class, $exerciseLog,[
@@ -96,7 +105,7 @@ class ExerciseLogController extends AbstractController
     #[Route('/exercise-logs/{workoutId}/{exerciseId}', name: 'update-exercise-log', methods: ['PATCH'])]
     public function update(int $workoutId, int $exerciseId, EntityManagerInterface $entityManager, ExerciseLogRepository $exerciseLogRepository, Request $request): Response
     {
-        $exerciseLog = $exerciseLogRepository->findByWorkoutAndUser($workoutId, $exerciseId);
+        $exerciseLog = $exerciseLogRepository->findByWorkoutAndExercise($workoutId, $exerciseId);
 
         $form = $this->createForm(EditExerciseLogType::class, $exerciseLog, [
             'method' => 'PATCH',

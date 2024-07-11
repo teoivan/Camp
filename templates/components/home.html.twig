@@ -3,13 +3,14 @@
 {% block title %}Home{% endblock %}
 
 {% block body %}
-    <div class="hero-section text-white" style="height: 55vh; background: linear-gradient(95deg, #7465b5, #53abbd);">
+    <div class="hero-section text-white " style="height: 57vh; background: linear-gradient(95deg, #7465b5, #53abbd);">
         <div class="container h-100">
             <div class="row h-100 align-items-center">
                 <div class="col-md-6 text-center text-md-left">
                     <h1 class="hero-title">Smart Workout</h1>
                     <h4 class="hero-subtitle">Your Journey to a Healthier Life Begins Here</h4>
-                    <a class="btn btn-outline-light btn-lg" href="{{ path('sign-in') }}" role="button">Get Started</a>
+                    <a class="btn btn-outline-light btn-lg" href="{% if is_granted('IS_AUTHENTICATED_FULLY') %}{{ path('show-workouts') }}
+                                    {% else %}{{ path('app_login') }}{% endif %}" role="button">Get Started</a>
                 </div>
                 <div class="col-md-6 d-none d-md-block">
                     <img src="{{ asset('images/hero.png') }}" class="img-fluid image" alt="Workout Image">
@@ -51,7 +52,7 @@
 
     <section class="top-exercises">
         <div class="container mt-2">
-            <h2 class="text-center mb-4">Top workouts</h2>
+            <h2 class="text-center mb-4">Top exercises</h2>
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false">
                 <div class="carousel-inner">
                     {% for exerciseLog in exerciseLogs %}

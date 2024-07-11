@@ -1,31 +1,40 @@
 {% extends '/base.html.twig' %}
-{% block title %}Exercise details{% endblock %}
-{% block body%}
-    <div class="container mt-4">
-        <h1>Exercise details</h1>
-    <div class="col mb-5">
-        <div class="card shadow-sm h-100 mt-5">
-            <div class="card-body">
-                <div class="row g-0">
-                    <div class="col-md-6 p-4">
-                        <h2 class="card-title">{{ exercise.name }}</h2>
-                        <p class="card-text"><strong>Type:</strong> {{ exercise.type.name }}</p>
-                        <a href="{{  path('edit-exercise', { 'id': exercise.id })}}" class="btn btn-secondary mt-2">Edit</a>
-                    </div>
-                    <div class="col-md-4 p-2">
-                        <div class="embed-responsive embed-responsive-16by9 h-100">
-                            {% if exercise.videoLink %}
-                                {% set embedUrl = exercise.videoLink|replace({'watch?v=': 'embed/'})|split('&')[0] %}
-                                <iframe class="embed-responsive-item" src="{{ embedUrl }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                            {% else %}
-                                <p class="text-center my-3">No video available</p>
-                            {% endif %}
+{% block title %}Exercise Details{% endblock %}
+{% block body %}
+    <div class="container custom-mt">
+        <h1 class="text-center">Exercise Details</h1>
+        <div class="row justify-content-center mt-5">
+            <div class="col-lg-8">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="row g-0">
+                            <div class="col-md-6 p-4">
+                                <h2 class="card-title">{{ exercise.name }}</h2>
+                                <h5 class="card-text"><strong>Type:</strong> {{ exercise.type.name }}</h5>
+                                {% if is_granted('IS_AUTHENTICATED_FULLY') and user.role=='trainer' %}
+                                    <a href="{{ path('edit-exercise', { 'id': exercise.id }) }}" class="btn btn-secondary mt-2">Edit</a>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6 p-2">
+                                <div class="ratio ratio-16x9">
+                                    {% if exercise.videoLink %}
+                                        {% set embedUrl = exercise.videoLink|replace({'watch?v=': 'embed/'})|split('&')[0] %}
+                                        <iframe src="{{ embedUrl }}" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                    {% else %}
+                                        <p class="text-center my-3">No video available</p>
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-
+    <style>
+        .custom-mt {
+            margin-top: 80px;
+            margin-bottom: 30px;
+        }
+    </style>
 {% endblock %}

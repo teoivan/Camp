@@ -15,8 +15,11 @@
                                     <h2 class="card-title mb-1">{{ exerciseLog.exercise.name }}</h2>
                                     <p class="card-text mb-1"><strong>Type:</strong> {{ exerciseLog.exercise.type.name }}</p>
                                     <p class="card-text mb-1"><strong>Reps:</strong> {{ exerciseLog.nrReps }}</p>
-                                    <div id="timer-{{ loop.index }}" class="timer"> Time: <strong>{{ exerciseLog.duration|date('i:s') }}</strong></div>
-                                    <button class="btn btn-primary mt-2 start-exercise-button" data-index="{{ loop.index }}" data-duration="{{ exerciseLog.duration|date('U') - '1970-01-01 00:00:00'|date('U') }}">Start Exercise</button>
+                                    <div id="timer-{{ loop.index }}" class="timer-container">
+                                        <span class="timer">Time: <strong>{{ exerciseLog.duration|date('i:s') }}</strong></span>
+                                    </div>
+                                    <button class="btn btn-secondary mt-2 start-exercise-button" data-index="{{ loop.index }}" data-duration="{{ exerciseLog.duration|date('U') - '1970-01-01 00:00:00'|date('U') }}">Start</button>
+                                    <button class="btn btn-secondary mt-2 pause-exercise-button" data-index="{{ loop.index }}" style="display: none;">Pause </button>
                                 </div>
                                 <div class="right-content d-flex align-items-center justify-content-center">
                                     <div class="embed-responsive embed-responsive-16by9 h-100">
@@ -26,7 +29,8 @@
                                         {% else %}
                                             <p class="text-center my-3">No video available</p>
                                         {% endif %}
-                                    </div>                                </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -49,8 +53,20 @@
             background-color: #7465b5;
             border-radius: 50%;
         }
-        .timer{
-            font-size: 20px;
+
+        .timer-container {
+            display: flex;
+            margin-top: 15px;
+        }
+
+        .timer {
+            font-size: 1.5rem;
+            color: #ffffff;
+            background-color: #9287bf;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .carousel-control-prev,
@@ -76,7 +92,19 @@
         }
 
         .right-content {
-            flex: 0 0 150px; /* Adjust the width as needed */
+            flex: 0 0 150px;
+        }
+
+        .btn.pause-exercise-button {
+            background-color: #53abbd;
+            border-color: #53abbd;
+            color: #fff;
+        }
+
+        .btn.resume-exercise-button {
+            background-color: #53abbd;
+            border-color: #53abbd;
+            color: #fff;
         }
     </style>
 
@@ -85,20 +113,41 @@
             button.addEventListener('click', function() {
                 let index = this.getAttribute('data-index');
                 let duration = parseInt(this.getAttribute('data-duration'));
-                let timer = document.getElementById(`timer-${index}`);
+                let timerContainer = document.getElementById(`timer-${index}`);
+                let timer = timerContainer.querySelector('.timer strong');
+                let pauseButton = document.querySelector(`.pause-exercise-button[data-index="${index}"]`);
+                let startButton = this;
+
+                startButton.style.display = 'none';
+                pauseButton.style.display = 'inline-block';
 
                 let countdown = setInterval(() => {
-                    let minutes = Math.floor(duration / 60);
-                    let seconds = duration % 60;
-                    timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-                    duration--;
+                    if (!timerContainer.getAttribute('data-paused')) {
+                        let minutes = Math.floor(duration / 60);
+                        let seconds = duration % 60;
+                        timer.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                        duration--;
 
-                    if (duration < 0) {
-                        clearInterval(countdown);
-                        this.disabled = true;
-                        alert('Time is up! Move to the next exercise.');
+                        if (duration < 0) {
+                            clearInterval(countdown);
+                            pauseButton.style.display = 'none';
+                        }
                     }
                 }, 1000);
+
+                pauseButton.addEventListener('click', function() {
+                    if (timerContainer.getAttribute('data-paused')) {
+                        timerContainer.removeAttribute('data-paused');
+                        this.textContent = 'Pause';
+                        this.classList.remove('resume-exercise-button');
+                        this.classList.add('pause-exercise-button');
+                    } else {
+                        timerContainer.setAttribute('data-paused', 'true');
+                        this.textContent = 'Resume';
+                        this.classList.remove('pause-exercise-button');
+                        this.classList.add('resume-exercise-button');
+                    }
+                });
             });
         });
     </script>

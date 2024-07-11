@@ -12,6 +12,7 @@ use App\Repository\UserRepository;
 use App\Repository\WorkoutRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -19,20 +20,28 @@ use Symfony\Component\Routing\Attribute\Route;
 class WorkoutController extends AbstractController
 {
 
+    public function __construct(
+        private Security $security,
+    ){
+    }
+
     #[Route('/workouts', name: 'show-workouts', methods: ['GET'])]
     public function index(WorkoutRepository $workoutRepository): Response
     {
+
+        $user=$this->security->getUser();
         $workouts = $workoutRepository->findAll();
         return $this->render('workout/showWorkouts.html.twig', [
             'controller_name' => 'WorkoutController',
             'workouts' => $workouts,
-
+            'user' => $user,
         ]);
     }
 
     #[Route('/workouts/{workoutId}/start', name: 'start-workout', methods: ['GET'])]
     public function startWorkout(int $workoutId, ExerciseLogRepository $exerciseLogRepository): Response
     {
+
         $exerciseLogs = $exerciseLogRepository->findByWorkoutId($workoutId);
 
         return $this->render('workout/startWorkout.html.twig', [
@@ -67,7 +76,7 @@ class WorkoutController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $workout= $form->getData();
-            $user=$userRepository->findUserById(1);
+            $user=$this->security->getUser();
             $workout->setUser($user);
             $workout->setDate(new \DateTime());
             $entityManager->persist($workout);

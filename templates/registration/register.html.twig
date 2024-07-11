@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Register{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6 mt-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Register</h1>
+
+                        {{ form_start(registrationForm) }}
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.name) }}
+                            {{ form_widget(registrationForm.name, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.name) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.email) }}
+                            {{ form_widget(registrationForm.email, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.email) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.plainPassword, 'Password') }}
+                            {{ form_widget(registrationForm.plainPassword, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.plainPassword) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.birth_day) }}
+                            {{ form_widget(registrationForm.birth_day, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.birth_day) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(registrationForm.gender) }}
+                            {{ form_widget(registrationForm.gender, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(registrationForm.gender) }}
+                        </div>
+                        <div class="mb-3 form-check">
+                            {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                            {{ form_label(registrationForm.agreeTerms, null, {'label_attr': {'class': 'form-check-label'}}) }}
+                            {{ form_errors(registrationForm.agreeTerms) }}
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                        {{ form_end(registrationForm) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

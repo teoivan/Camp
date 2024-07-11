@@ -1,15 +1,25 @@
 {% extends '/base.html.twig' %}
 {% block title %}Exercise edit{% endblock %}
-{% block content%}
+{% block body%}
     <div class="container mt-4">
+        <div class="row justify-content-center">
 
-        <h1>Edit the Exercise!</h1>
-        {{ form_start(form) }}
-        {{ form_row(form.name)}}
-        {{ form_row(form.video_link) }}
-        {{ form_row(form.type) }}
-        <button type="submit" class="btn btn-primary">Edit</button>
-        {{ form_end(form) }}
-        <a href="{{ path('delete-exercise', {'id':exercise.id})}}" class="btn btn-secondary mt-2">Delete</a>
+            <div class="col-md-6 mt-5">
+                <div class="text-center">
+                    <h1>Edit the Exercise!</h1>
+                </div>
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        {{ form_start(form) }}
+                        {{ form_row(form.name)}}
+                        {{ form_row(form.video_link) }}
+                        {{ form_row(form.type) }}
+                        <button type="submit" class="btn btn-primary">Edit</button>
+                        {{ form_end(form) }}
+                        <a href="{{ path('delete-exercise', {'id':exercise.id})}}" class="btn btn-secondary mt-2">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 {% endblock %}

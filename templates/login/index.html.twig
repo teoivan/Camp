@@ -1,0 +1,35 @@
+{% extends '/base.html.twig' %}
+
+{% block title %}Login{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        <div class="row justify-content-center">
+            <div class="col-md-6 mt-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Sign In</h1>
+                        <form class="loginForm" action="{{ path('app_login') }}" method="post">
+                            <div class="mb-3">
+                                <label for="username" class="form-label">Email:</label>
+                                <input type="text" id="username" name="_username" class="form-control" value="{{ last_username }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password:</label>
+                                <input type="password" id="password" name="_password" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Login</button>
+                        </form>
+                        <div class="text-center mt-3">
+                            <a href="{{ path('app_register', {'role':'trainer'}) }}">Are you a new trainer? Sign Up</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

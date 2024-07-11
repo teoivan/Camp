@@ -6,6 +6,7 @@ use App\Entity\Type;
 use App\Form\Type\ExerciseType;
 use App\Repository\ExerciseRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -14,27 +15,34 @@ use App\Entity\Exercise;
 
 class ExerciseController extends AbstractController
 {
-
+    public function __construct(
+        private Security $security,
+    ){
+    }
 
     #[Route('/exercises', name: 'show-exercises', methods: ['GET'])]
     public function index(ExerciseRepository $exerciseRepository): Response
     {
+        $user = $this->security->getUser();
         $exercises = $exerciseRepository->findAll();
         return $this->render('exercise/showExercisesPage.html.twig', [
             'controller_name' => 'ExerciseController',
             'exercises' => $exercises,
+            'user' => $user,
         ]);
     }
 
     #[Route('/exercises/{id}', name: 'get-exercise', methods: ['GET'], requirements: ['id' => '\d+'])]
     public function show(int $id, ExerciseRepository $exerciseRepository): Response
     {
+        $user = $this->security->getUser();
         $exercise = $exerciseRepository->find($id);
         if (!$exercise) {
             throw $this->createNotFoundException('No exercise found for id ' . $id);
         }
         return $this->render('exercise/showExercise.html.twig', [
             'exercise' => $exercise,
+            'user' => $user,
         ]);
     }
 

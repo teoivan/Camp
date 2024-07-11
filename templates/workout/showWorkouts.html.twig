@@ -3,12 +3,14 @@
 {% block title %}Workouts{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
+    <div class="container custom-mt">
         <h1 class="text-center mb-4">Workout List</h1>
         <div class="row justify-content-center">
+            {% if is_granted('IS_AUTHENTICATED_FULLY') and user.role=='trainer' %}
             <div class="col-10 mb-3">
                 <a href="{{  path('new-workout')}}" class="btn btn-secondary mt-3 m-md-2">Add new workout</a>
             </div>
+            {% endif %}
             {% for workout in workouts %}
                 <div class="col-10 mb-3">
                     <div class="card shadow-sm">
@@ -19,8 +21,12 @@
                                 <p class="card-text mb-1"><strong>Date created:</strong> {{ workout.date|date('d-m-Y') }}</p>
                                 <p class="card-text mb-0"><strong>Type:</strong> {{ workout.type.name }}</p>
                             </div>
-                            <a href="{{ path('show-exercise-logs', { 'workoutId': workout.id}) }}" class="btn btn-primary ml-auto">View</a>
+                            <a href="{% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                                {{ path('show-exercise-logs', { 'workoutId': workout.id}) }}{% else%}
+                                                {{ path('app_login')}}{% endif %}" class="btn btn-primary ml-auto">View</a>
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') and workout.user.email==user.email and user.role=='trainer' %}
                             <a href="{{ path('edit-workout', { 'id': workout.id}) }}" class="btn btn-primary ml-auto">Edit</a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

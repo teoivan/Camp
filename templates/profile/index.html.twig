@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+    <div class="container custom-mt">
+        <div class="card shadow">
+            <div class="card-header" style="background-color: #eeecf3">
+                <h2>User Profile</h2>
+            </div>
+            <div class="card-body">
+                <p><strong>Name:</strong> {{ user.name }}</p>
+                <p><strong>Email:</strong> {{ user.email }}</p>
+                <p><strong>Birth Date:</strong> {{ user.birthDay|date('Y-m-d') }}</p>
+                <p><strong>Gender:</strong> {{ gender_map[user.gender] }}</p>
+                <p><strong>Role:</strong> {{ user.role }}</p>
+                <a href="/logout" class="btn btn-primary">Logout</a>
+            </div>
+        </div>
+    </div>
+    <style>
+        .custom-mt {
+            margin-top: 100px;
+            margin-bottom: 30px;
+        }
+    </style>
+{% endblock %}

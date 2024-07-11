@@ -2,7 +2,14 @@
 {% block title %}User edit{% endblock %}
 {% block content%}
     <div class="container mt-4">
-        <h1>Edit the User!</h1>
+    <div class="row justify-content-center">
+
+    <div class="col-md-6 mt-5">
+    <div class="text-center">
+        <h1>Edit the user</h1>
+    </div>
+    <div class="card shadow-sm">
+    <div class="card-body">
         {{ form_start(form) }}
         {{ form_row(form.name)}}
         {{ form_row(form.birth_day) }}
@@ -10,5 +17,9 @@
         <button type="submit" class="btn btn-primary">Edit</button>
         {{ form_end(form) }}
         <a href="{{  path('delete-user', { 'id': user.id }) }}" class="btn btn-secondary mt-2">Delete</a>
+    </div>
+    </div>
+    </div>
+    </div>
     </div>
 {% endblock %}

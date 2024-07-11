@@ -10,6 +10,7 @@ use App\Repository\ExerciseRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,14 +19,25 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class UserController extends AbstractController
 {
+    public function __construct(
+        private Security $security,
+    ){
+    }
 
     #[Route('/users', name: 'show-users', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        $users = $userRepository->findAll();
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user=$this->security->getUser();
+        if($user->getRole()=='user'){
+            $users = $userRepository->findBy(['role' => 'trainer']);
+        }else{
+            $users = $userRepository->findAll();
+        }
         return $this->render('user/showUsers.html.twig', [
             'controller_name' => 'UserController',
             'users' => $users,
+            'actualUser'=>$user,
         ]);
     }
 
@@ -40,66 +52,6 @@ class UserController extends AbstractController
             'user' => $user,
         ]);
     }
-
-    #[Route('/users/{role}/new', name: 'new-user', methods: ['GET'])]
-    public function new(string $role): Response
-    {
-        $user = new User();
-
-
-        $form = $this->createForm(UserType::class, $user,[
-            'action' => $this->generateUrl('create-user',['role'=>$role]),
-            'method' => 'POST',
-        ]);
-
-        return $this->render('user/addNewUser.html.twig', [
-            'form' => $form,
-            'role' => $role,
-        ]);
-
-    }
-
-    #[Route('/users/{role}', name: 'create-user', methods: ['POST'])]
-    public function create(string $role,Request $request, EntityManagerInterface $entityManager): Response
-    {
-        $newUser = new User();
-
-        $form = $this->createForm(UserType::class, $newUser, [
-            'method' => 'POST',
-        ]);
-        $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            $newUser= $form->getData();
-            $newUser->setRole($role);
-            $entityManager->persist($newUser);
-            $entityManager->flush();
-            $this->addFlash('success', 'User added successfully!');
-            if($newUser->getRole() == 'user'){
-                return $this->redirectToRoute('show-users');
-            }else{
-                return $this->redirectToRoute('sign-in');
-            }
-        }
-
-        return $this->render('user/addNewUser.html.twig', [
-            'form' => $form,
-        ]);
-
-    }
-
-
-   #[Route('/signin', name: 'sign-in', methods: ['GET','POST'])]
-   public function sign(Request $request): Response
-   {
-       $form = $this->createForm(SignInType::class);
-       $form->handleRequest($request);
-       if ($form->isSubmitted() && $form->isValid()) {
-           return $this->redirectToRoute('home');
-       }
-       return $this->render('user/signIn.html.twig', [
-           'form' => $form,
-       ]);
-   }
 
 
     #[Route('/users/{id}/edit', name: 'edit-user', methods: ['GET'])]
@@ -130,9 +82,7 @@ class UserController extends AbstractController
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'User Edited!');
-            return $this->redirectToRoute('get-user', [
-                'id' => $id,
-            ]);
+            return $this->redirectToRoute('show-users');
         }
         return $this->render('user/editUser.html.twig', [
             'form' => $form,
